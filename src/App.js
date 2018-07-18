@@ -12,14 +12,17 @@ export default class App extends Component{
     this.name='';
     this.price='';
     this.url='';
+    this.count=0;
   }
   doAjax(){
     var url = 'https://raw.githubusercontent.com/brainmentorspvtltd/myserverdata/master/mobiles.json';
     fetch(url).then(response=>{
       response.json().then(data=>{
-        if(!data.mobiles.length<this.state.mobiles.length){
-        this.setState({'mobiles':data.mobiles});
-      }
+        if(data.mobiles.length<this.state.mobiles.length){
+        }
+      else{
+        this.setState(...this.state,{'mobiles':data.mobiles});
+          }
         // this.showItems();
       }).catch(err=>{
         console.log("INVALID JSON");
@@ -33,19 +36,15 @@ export default class App extends Component{
   // }
   getId(event){
     this.id=event.target.value;
-    console.log(event.target.value);
   }
   getName(event){
     this.name=event.target.value;
-    console.log(event.target.value);
   }
   getPrice(event){
     this.price=event.target.value;
-    console.log(event.target.value);
   }
   getUrl(event){
     this.url=event.target.value;
-    console.log(event.target.value);
   }
   addProduct(){
     if(!this.id || !this.name || !this.price || !this.url){
@@ -57,13 +56,12 @@ export default class App extends Component{
     obj.name=this.name;
     obj.price=this.price;
     obj.url=this.url;
-    console.log(this.state);
-    this.setState({'mobiles': this.state.mobiles.concat(obj)});
-    console.log(this.state);
+    this.setState({'mobiles': this.state.mobiles.concat(obj),count:this.count});
   }
-  addAndDisable(val){
-    console.log("Called",val);
-    // this.setState({count:this.state.count+1});
+  addAndDisable(event){
+    event.target.disabled=true;
+    this.count++;
+    this.setState(...this.state,{count:this.count});
   }
   render(){
     return(
@@ -74,7 +72,7 @@ export default class App extends Component{
         </div>
 
         <div className="col-md-6 col-sm-12 col-12">
-          <Products data={this.state.mobiles} sendData={this.addAndDisable.bind(this)}/>
+          <Products data={this.state.mobiles} sendData={this.addAndDisable.bind(this)} count={this.state.count}/>
         </div>
       </div>
     </div>
